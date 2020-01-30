@@ -26,6 +26,13 @@ dependencies:
 
   permission_handler: '^4.2.0+hotfix.2'
   path_provider: ^1.5.1
+  progress_dialog: ^1.2.0
+  speech_to_text: ^0.8.0
+  font_awesome_flutter: ^8.5.0
+  dio: ^3.0.8
+  flutter_open_whatsapp: ^0.1.2
+  flutter_sms: ^1.1.0
+
 
 
 dev_dependencies:

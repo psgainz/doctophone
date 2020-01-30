@@ -1,6 +1,6 @@
 import 'package:doctophone/Miscellaneous/AppColors.dart';
 import 'package:flutter/material.dart';
-import 'package:doctophone/Miscellaneous/GlobalVariables.dart';
+//import 'package:doctophone/Miscellaneous/GlobalVariables.dart';
 import 'package:doctophone/PrescriptionHistory.dart';
 import 'package:doctophone/Settings.dart';
 import 'AudioRecorder/Recorder.dart';

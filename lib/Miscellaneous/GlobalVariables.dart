@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+String warningButtonPressed = 'No';  //yes if yes button & no if no button & Ok if Ok button
+
+//auth details
+String email = '';
+
 //File details 
 String directoryPath = '';
 String filename = '';
