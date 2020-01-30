@@ -9,6 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:doctophone/Miscellaneous/AlertDialog.dart';
 import 'package:doctophone/Home.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_local_auth_invisible/flutter_local_auth_invisible.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -17,10 +19,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
 
-  TextEditingController _emailController;
-  TextEditingController _passwordController;
-
-  ProgressDialog pr;
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _canCheckBiometrics;
+  List<BiometricType> _availableBiometrics;
+  String _authorized = 'Not Authorized';
 
   Future checkStoragePermissions() async {
    Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler()
@@ -34,24 +36,37 @@ class _LoginState extends State<Login> {
  void initState(){
    super.initState();
 
-   initialiseProgressBar();
-
-   _emailController = TextEditingController();
-   _passwordController = TextEditingController();
+   _authorized = 'Not Authorized';
 
    Future.microtask((){
      checkStoragePermissions();
    });
  }
 
- void initialiseProgressBar(){
-    pr = ProgressDialog(
-     context,
-     type: ProgressDialogType.Download,
-     isDismissible: false,
-     showLogs: false
-   );
- }
+ Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      authenticated = await auth.authenticateWithBiometrics(
+          localizedReason: 'Scan your fingerprint to authenticate',
+          useErrorDialogs: true,
+          stickyAuth: false);
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _authorized = authenticated ? 'Authorized' : 'Not Authorized';
+      if(_authorized == 'Authorized'){
+        Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context)=>
+            Home()), 
+        (Route<dynamic> route) => false);
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,38 +86,7 @@ class _LoginState extends State<Login> {
               children: <Widget>[
                 SizedBox(
                   width: double.infinity,
-                  height: deviceHeight * 0.09,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-                  child: TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter Your Email',
-                      labelText: 'Email',
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: deviceHeight * 0.03,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-                  child: TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Enter Your Password',
-                      labelText: 'Password',
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  height: deviceHeight * 0.09,
+                  height: deviceHeight * 0.15,
                 ),
                 Center(
                   widthFactor: deviceWidth * 0.09,
@@ -110,83 +94,13 @@ class _LoginState extends State<Login> {
                     color: foreground,
                     textColor: background,
                     child: Text(
-                      'Log In '
+                      'Authenticate'
                     ),
-                    onPressed: () async {
-                      await signInWithEmailPassword(_emailController.text,_passwordController.text);
-                    }
+                    onPressed: _authenticate
                   ),
                 )
               ],
             ),
     );
-  }
-
-  Future<FormData> formLoginData(String text1 ,String text2) async {
-    return FormData.fromMap({
-      "email": text1,
-      "password" : text2
-    });
-  }
-
-  Future<void> signInWithEmailPassword(String emailStr , String passwordStr) async {
-
-    var dio = Dio();
-
-    Response response;
-    var data = formLoginData(emailStr,passwordStr);
-
-    //var responseString = true;
-
-    try{
-    response = await dio.post(
-    //'https://test-flask-api-244617.appspot.com/login',
-    'https://8080-b8f85618-7482-44a5-a5d3-00259d889406.ws-ap01.gitpod.io/',
-    data: data,
-    //Send data with "application/x-www-form-urlencoded" format
-    options: Options(
-      contentType: Headers.formUrlEncodedContentType,
-    ),
-    onSendProgress: (sent , total){
-      if (total != -1) {
-        pr.update(
-          progress: (sent / total * 100).roundToDouble(),
-          message: 'Sending File : ' + ((sent / total * 100).toInt()).toStringAsFixed(0) + "%",
-        );
-        if(sent == total) print('Sent');
-      }
-    },
-    onReceiveProgress: (received , total){
-       if(total != -1) {
-          pr.update(
-            progress: (received / total * 100).roundToDouble(),
-            message: 'Receiving Data : ' + ((received / total * 100).toInt()).toStringAsFixed(0) + "%",
-          );
-          if(received == total) print('Received');
-        }
-    },
-  );
-  var responseString = json.encode(response.data);
-  print(responseString);
-  }
-  on DioError catch(e) {
-      print(e.response.data);
-      print(e.response.headers);
-      print(e.response.request);
-      await showAlertDialog(context,
-          alertTitle: 'Internet Connection Error',
-          alertText: 'Please check you internet connection & try again',
-          numberButtons: 1
-      );
-  }
-
-  if(responseString){
-      email = _emailController.text;
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context)=>
-            Home()), 
-        (Route<dynamic> route) => false);
-    }
   }
 }

@@ -3,6 +3,6 @@ import 'package:doctophone/Miscellaneous/GlobalVariables.dart';
 
 Future<void> signOut() async {
 
-  email = '';
+  //email = '';
 
 }

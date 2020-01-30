@@ -4,6 +4,7 @@ String warningButtonPressed = 'No';  //yes if yes button & no if no button & Ok 
 
 //auth details
 String email = '';
+//String authorized = 'Not Authorized';
 
 //File details 
 String directoryPath = '';
