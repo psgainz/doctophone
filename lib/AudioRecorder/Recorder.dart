@@ -85,7 +85,7 @@ class _RecorderState extends State<Recorder> with SingleTickerProviderStateMixin
   void startListening() {
     lastWords = "";
     lastError = "";
-    speech.listen(onResult: resultListener );
+    speech.listen(onResult: resultListener, listenFor: Duration(minutes: 1));
     setState(() {
       sendFileWidget.clear();
     });
@@ -124,6 +124,7 @@ class _RecorderState extends State<Recorder> with SingleTickerProviderStateMixin
     setState(() {
       lastWords = "${result.recognizedWords}";
     });
+    if(result.finalResult) startListening();
   }
 
   @override

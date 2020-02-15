@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:doctophone/Miscellaneous/AppColors.dart';
-import 'Authentication/BlankVerificaton.dart';
+import 'AudioRecorder/Recorder.dart';
+import 'Home.dart';
+// import 'Authentication/BlankVerificaton.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +23,7 @@ class MyApp extends StatelessWidget {
             )
           ),
       ), 
-      home: Login(),      
+      home: Home(),      
     );
   }
 }

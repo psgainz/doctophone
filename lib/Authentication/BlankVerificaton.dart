@@ -1,13 +1,13 @@
 import 'package:doctophone/Miscellaneous/AppColors.dart';
-import 'package:doctophone/SendFile/SendFile.dart';
+// import 'package:doctophone/SendFile/SendFile.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:doctophone/Miscellaneous/GlobalVariables.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:doctophone/Miscellaneous/AlertDialog.dart';
+// import 'dart:convert';
+// import 'package:dio/dio.dart';
+// import 'package:progress_dialog/progress_dialog.dart';
+// import 'package:doctophone/Miscellaneous/AlertDialog.dart';
 import 'package:doctophone/Home.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_auth_invisible/flutter_local_auth_invisible.dart';
@@ -20,8 +20,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   final LocalAuthentication auth = LocalAuthentication();
-  bool _canCheckBiometrics;
-  List<BiometricType> _availableBiometrics;
+  // bool _canCheckBiometrics;
+  // List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
 
   Future checkStoragePermissions() async {
